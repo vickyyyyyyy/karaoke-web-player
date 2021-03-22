@@ -3,6 +3,8 @@ import './App.css';
 import Error from './Error';
 import * as api from './api';
 import Loading from './Loading';
+import { io } from 'socket.io-client';
+const API_ENDPOINT = 'http://localhost:5000/';
 
 const App = () => {
   const [ready, setReady] = React.useState(false);
@@ -26,6 +28,10 @@ const App = () => {
     };
 
     waitForData();
+
+    const socket = io(API_ENDPOINT, { transports: ['websocket', 'polling'] });
+
+    socket.emit('connection');
   }, []);
 
   return (
