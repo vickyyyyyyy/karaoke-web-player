@@ -28,7 +28,7 @@ app.use('/', router);
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: 'https://localhost:3008',
+    ...corsOptions,
     methods: ['GET', 'POST'],
   },
   transports: ['websocket', 'polling'],
