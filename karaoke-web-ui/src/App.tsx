@@ -3,16 +3,16 @@ import './App.css';
 import Error from './Error';
 import * as api from './api';
 import Loading from './Loading';
-import { io, Socket } from 'socket.io-client';
 import { Player } from './Player/Player';
 import { Playlist, QueuedSong } from './Playlist/Playlist';
 import { v4 as uuidv4 } from 'uuid';
 import { User } from './api';
+import { SocketContext } from './SocketContext/SocketContext';
 
 const API_ENDPOINT = 'http://localhost:5000/';
 
 const App = () => {
-  const [socket, setSocket] = React.useState<Socket | undefined>();
+  const socket = React.useContext(SocketContext);
   const [ready, setReady] = React.useState(false);
   const [error, setError] = React.useState(false);
   const [data, setData] = React.useState('');
@@ -40,16 +40,10 @@ const App = () => {
   };
 
   React.useEffect(() => {
-    // connect once at the start
-    const newSocket = io(API_ENDPOINT, {
-      transports: ['websocket', 'polling'],
-    });
-    setSocket(newSocket);
-
     const waitForData = async () => {
       await getUsers();
 
-      await addUser(newSocket.io.engine.id);
+      await addUser(socket.io.engine.id);
 
       setReady(true);
     };
@@ -68,6 +62,7 @@ const App = () => {
           </div>
         ))}
       </div>
+
       <Player url={playlist?.[0]?.url} />
       <Playlist playlist={playlist} setPlaylist={setPlaylist} />
       {error ? <Error /> : ready ? <span>{data}</span> : <Loading />}
