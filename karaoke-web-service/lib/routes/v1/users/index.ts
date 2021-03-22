@@ -5,7 +5,7 @@ export const getUsers = () => {
   return storedUsers;
 };
 
-export const addUser = (user: string) => {
+export const addUser = (username: string) => {
   console.log('stored users', storedUsers);
-  storedUsers.push(user);
+  storedUsers.push(username);
 };

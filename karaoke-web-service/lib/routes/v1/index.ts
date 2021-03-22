@@ -10,9 +10,13 @@ router.get('/v1/data', (_req, res) => res.status(httpStatus.OK).json(data()));
 router.get('/v1/users', (_req, res) =>
   res.status(httpStatus.OK).json(getUsers())
 );
-router.post('/v1/users', (username: string) => {
-  console.log('/v1/users');
-  addUser(username);
+
+router.post('/v1/users', (req, res) => {
+  console.log('/v1/users', req.body);
+
+  addUser(req.body.username);
+
+  return res.status(201).json(req.body.username);
 });
 
 export default router;
