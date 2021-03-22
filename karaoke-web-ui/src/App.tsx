@@ -5,7 +5,7 @@ import * as api from './api';
 import Loading from './Loading';
 import { io, Socket } from 'socket.io-client';
 import { Player } from './Player/Player';
-import { Playlist } from './Playlist/Playlist';
+import { Playlist, QueuedSong } from './Playlist/Playlist';
 const API_ENDPOINT = 'http://localhost:5000/';
 
 const App = () => {
@@ -14,6 +14,7 @@ const App = () => {
   const [error, setError] = React.useState(false);
   const [data, setData] = React.useState('');
   const [users, setUsers] = React.useState([]);
+  const [playlist, setPlaylist] = React.useState<QueuedSong[]>([]);
 
   const getUsers = async () => {
     try {
@@ -45,8 +46,8 @@ const App = () => {
         <h2>Online Users</h2>
         {users.map((user) => user)}
       </div>
-      <Player />
-      <Playlist />
+      <Player url={playlist?.[0]?.url} />
+      <Playlist playlist={playlist} setPlaylist={setPlaylist} />
       {error ? <Error /> : ready ? <span>{data}</span> : <Loading />}
     </div>
   );

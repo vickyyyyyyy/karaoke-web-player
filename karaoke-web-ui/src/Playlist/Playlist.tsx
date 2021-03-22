@@ -2,15 +2,21 @@ import React from 'react';
 import * as api from '../api';
 import { DEFAULT_VIDEO } from '../Player/Player';
 
-interface QueuedSong {
+export interface QueuedSong {
   user: string;
   url: string;
   title: string;
 }
 
-export const Playlist = () => {
+interface Props {
+  playlist: QueuedSong[];
+  setPlaylist: (queuedSong: QueuedSong[]) => void;
+}
+
+export const Playlist = (props: Props) => {
+  const { playlist, setPlaylist } = props;
+
   const [newSong, setNewSong] = React.useState<string>('');
-  const [playlist, setPlaylist] = React.useState<QueuedSong[]>([]);
 
   const setDefaultPlaylist = async () => {
     const details = await api.getVideoDetails(DEFAULT_VIDEO);
@@ -41,9 +47,17 @@ export const Playlist = () => {
     ]);
   };
 
+  const skipSong = () => {
+    const newPlaylist = [...playlist];
+    newPlaylist.shift();
+
+    setPlaylist(newPlaylist);
+  };
+
   return (
     <>
       <h2>Playlist</h2>
+      <button onClick={() => skipSong()}>Skip to next</button>
       {playlist.map((queuedSong) => (
         <div>
           <span>{queuedSong.title}</span>
@@ -52,12 +66,19 @@ export const Playlist = () => {
           <br />
         </div>
       ))}
-      <input
-        placeholder='Link'
-        value={newSong}
-        onChange={(ev) => setNewSong(ev.currentTarget.value)}
-      />
-      <button onClick={() => queueNewSong(newSong)}>Add song</button>
+      {playlist.length === 0 ? (
+        <div>
+          <span>No queued songs, playing default</span>
+        </div>
+      ) : null}
+      <div>
+        <input
+          placeholder='Link'
+          value={newSong}
+          onChange={(ev) => setNewSong(ev.currentTarget.value)}
+        />
+        <button onClick={() => queueNewSong(newSong)}>Add song</button>
+      </div>
     </>
   );
 };
