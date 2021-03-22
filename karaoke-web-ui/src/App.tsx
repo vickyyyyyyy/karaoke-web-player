@@ -11,11 +11,21 @@ const App = () => {
   const [ready, setReady] = React.useState(false);
   const [error, setError] = React.useState(false);
   const [data, setData] = React.useState('');
+  const [users, setUsers] = React.useState([]);
 
   const getSomeData = async () => {
     try {
       const data = await api.getSomeData();
       setData(data);
+    } catch (e) {
+      setError(true);
+    }
+  };
+
+  const getUsers = async () => {
+    try {
+      const data = await api.getUsers();
+      setUsers(data);
     } catch (e) {
       setError(true);
     }
@@ -28,6 +38,7 @@ const App = () => {
 
     const waitForData = async () => {
       await getSomeData();
+      await getUsers();
 
       setReady(true);
     };
@@ -38,6 +49,10 @@ const App = () => {
   return (
     <div className='container'>
       <h1>Karaoke</h1>
+      <div>
+        <h2>Online Users</h2>
+        {users.map((user) => user)}
+      </div>
       {error ? <Error /> : ready ? <span>{data}</span> : <Loading />}
     </div>
   );
