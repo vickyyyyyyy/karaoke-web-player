@@ -46,8 +46,8 @@ io.on('connection', (socket: Socket) => {
     io.sockets.emit('updatedUsers', getUsers());
   });
 
-  socket.on('user pressed play', () => {
-    socket.broadcast.emit('broadcasting user pressed play');
+  socket.on('user pressed play', (time: number) => {
+    socket.broadcast.emit('broadcasting user pressed play', time);
   });
 
   socket.on('disconnect', () => {
