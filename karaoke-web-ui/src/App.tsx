@@ -5,6 +5,7 @@ import * as api from './api';
 import Loading from './Loading';
 import { io, Socket } from 'socket.io-client';
 import { Player } from './Player/Player';
+import { Playlist } from './Playlist/Playlist';
 const API_ENDPOINT = 'http://localhost:5000/';
 
 const App = () => {
@@ -13,15 +14,6 @@ const App = () => {
   const [error, setError] = React.useState(false);
   const [data, setData] = React.useState('');
   const [users, setUsers] = React.useState([]);
-
-  const getSomeData = async () => {
-    try {
-      const data = await api.getSomeData();
-      setData(data);
-    } catch (e) {
-      setError(true);
-    }
-  };
 
   const getUsers = async () => {
     try {
@@ -38,7 +30,6 @@ const App = () => {
     setSocket(socket);
 
     const waitForData = async () => {
-      await getSomeData();
       await getUsers();
 
       setReady(true);
@@ -55,6 +46,7 @@ const App = () => {
         {users.map((user) => user)}
       </div>
       <Player />
+      <Playlist />
       {error ? <Error /> : ready ? <span>{data}</span> : <Loading />}
     </div>
   );

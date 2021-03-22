@@ -25,3 +25,15 @@ export const addUser = async (username: string) => {
     throw new Error(e);
   }
 };
+
+export const getVideoDetails = async (url: string) => {
+  try {
+    const data = await client().get(
+      `https://www.youtube.com/oembed?url=${url}&format=json`
+    );
+    console.log('get video details', data);
+    return data.data;
+  } catch (e) {
+    throw new Error(e);
+  }
+};
