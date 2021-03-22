@@ -5,6 +5,7 @@ import * as api from './api';
 import Loading from './Loading';
 import { Player } from './Player/Player';
 import { Playlist, QueuedSong } from './Playlist/Playlist';
+import { v4 as uuidv4 } from 'uuid';
 
 import { User } from './api';
 import { SocketContext } from './SocketContext/SocketContext';
@@ -13,6 +14,7 @@ const API_ENDPOINT = 'http://localhost:5000/';
 
 const App = () => {
   const socket = React.useContext(SocketContext);
+  const [username, setUserName] = React.useState(uuidv4());
   const [ready, setReady] = React.useState(false);
   const [error, setError] = React.useState(false);
   const [data, setData] = React.useState('');
@@ -24,7 +26,7 @@ const App = () => {
   });
 
   React.useEffect(() => {
-    socket.emit('newUser');
+    socket.emit('newUser', username);
     // const waitForData = async () => {
     //   await getUsers();
 
@@ -43,7 +45,15 @@ const App = () => {
         <h2>Online Users</h2>
         {users.map((user, index) => (
           <div key={`${index}-${user}`}>
-            <span>{user.name}</span>
+            <span>
+              {user.name === username ? (
+                <div>
+                  <b>{username}</b>
+                </div>
+              ) : (
+                user.name
+              )}
+            </span>
           </div>
         ))}
       </div>

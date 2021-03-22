@@ -6,7 +6,6 @@ import { Server, Socket } from 'socket.io';
 import { createServer } from 'http';
 import bodyParser from 'body-parser';
 import { addUser, getUsers, removeUser } from './lib/routes/v1/users';
-import { v4 as uuidv4 } from 'uuid';
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -41,8 +40,8 @@ io.on('connection', (socket: Socket) => {
   // when you connect, check the status of the video
   // if you are the first one then start from the beginning
 
-  socket.on('newUser', async () => {
-    addUser({ name: uuidv4(), id: socket.id });
+  socket.on('newUser', async (name) => {
+    addUser({ name, id: socket.id });
 
     io.sockets.emit('updatedUsers', getUsers());
   });
