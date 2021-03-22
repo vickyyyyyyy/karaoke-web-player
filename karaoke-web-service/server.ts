@@ -4,6 +4,7 @@ import cors from 'cors';
 import config from 'config';
 import { Server, Socket } from 'socket.io';
 import { createServer } from 'http';
+import bodyParser from 'body-parser';
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -15,6 +16,12 @@ const corsOptions = {
   credentials: true,
 };
 
+app.use(bodyParser.json());
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
 app.use(cors(corsOptions));
 app.use('/', router);
 
@@ -29,6 +36,7 @@ const io = new Server(httpServer, {
 
 io.on('connection', (socket: Socket) => {
   console.log('on connect');
+
   socket.on('disconnect', () => {
     console.log('disconnected');
   });
