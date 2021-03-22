@@ -27,8 +27,11 @@ const io = new Server(httpServer, {
   transports: ['websocket', 'polling'],
 });
 
-io.on('connection', (_socket: Socket) => {
+io.on('connection', (socket: Socket) => {
   console.log('on connect');
+  socket.on('disconnect', () => {
+    console.log('disconnected');
+  });
 });
 
 httpServer.listen(port);
