@@ -3,10 +3,11 @@ import './App.css';
 import Error from './Error';
 import * as api from './api';
 import Loading from './Loading';
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 const API_ENDPOINT = 'http://localhost:5000/';
 
 const App = () => {
+  const [socket, setSocket] = React.useState<Socket | undefined>();
   const [ready, setReady] = React.useState(false);
   const [error, setError] = React.useState(false);
   const [data, setData] = React.useState('');
@@ -21,6 +22,10 @@ const App = () => {
   };
 
   React.useEffect(() => {
+    // connect once at the start
+    const socket = io(API_ENDPOINT, { transports: ['websocket', 'polling'] });
+    setSocket(socket);
+
     const waitForData = async () => {
       await getSomeData();
 
@@ -28,10 +33,6 @@ const App = () => {
     };
 
     waitForData();
-
-    const socket = io(API_ENDPOINT, { transports: ['websocket', 'polling'] });
-
-    socket.emit('connection');
   }, []);
 
   return (
