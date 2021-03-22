@@ -60,7 +60,7 @@ const App = () => {
 
       <Player url={playlist?.[0]?.url} />
       <Playlist playlist={playlist} setPlaylist={setPlaylist} />
-      {error ? <Error /> : ready ? <span>{data}</span> : <Loading />}
+      {/* {error ? <Error /> : ready ? <span>{data}</span> : <Loading />} */}
     </div>
   );
 };
