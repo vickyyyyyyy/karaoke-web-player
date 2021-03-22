@@ -20,7 +20,7 @@ export const getUsers = async () => {
 
 export const addUser = async (username: string) => {
   try {
-    await client().post('/v1/users', username);
+    const response = await client().post('/v1/users', { username });
   } catch (e) {
     throw new Error(e);
   }

@@ -58,8 +58,8 @@ export const Playlist = (props: Props) => {
     <>
       <h2>Playlist</h2>
       <button onClick={() => skipSong()}>Skip to next</button>
-      {playlist.map((queuedSong) => (
-        <div>
+      {playlist.map((queuedSong, index) => (
+        <div key={`${index}-${queuedSong.title}`}>
           <span>{queuedSong.title}</span>
           <br />
           <span>by {queuedSong.user}</span>

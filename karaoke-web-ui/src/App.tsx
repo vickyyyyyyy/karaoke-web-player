@@ -6,6 +6,8 @@ import Loading from './Loading';
 import { io, Socket } from 'socket.io-client';
 import { Player } from './Player/Player';
 import { Playlist, QueuedSong } from './Playlist/Playlist';
+import { v4 as uuidv4 } from 'uuid';
+
 const API_ENDPOINT = 'http://localhost:5000/';
 
 const App = () => {
@@ -25,6 +27,18 @@ const App = () => {
     }
   };
 
+  const addUser = async () => {
+    try {
+      // generate a random username
+      const newUsername = uuidv4();
+
+      await api.addUser(newUsername);
+      await getUsers();
+    } catch (e) {
+      setError(true);
+    }
+  };
+
   React.useEffect(() => {
     // connect once at the start
     const socket = io(API_ENDPOINT, { transports: ['websocket', 'polling'] });
@@ -32,6 +46,7 @@ const App = () => {
 
     const waitForData = async () => {
       await getUsers();
+      await addUser();
 
       setReady(true);
     };
@@ -44,7 +59,11 @@ const App = () => {
       <h1>Karaoke</h1>
       <div>
         <h2>Online Users</h2>
-        {users.map((user) => user)}
+        {users.map((user) => (
+          <div>
+            <span>{user}</span>
+          </div>
+        ))}
       </div>
       <Player url={playlist?.[0]?.url} />
       <Playlist playlist={playlist} setPlaylist={setPlaylist} />
