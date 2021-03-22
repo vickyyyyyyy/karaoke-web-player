@@ -6,7 +6,7 @@ import { Server, Socket } from 'socket.io';
 import { createServer } from 'http';
 import bodyParser from 'body-parser';
 import { addUser, getUsers, removeUser } from './lib/routes/v1/users';
-import { getVideoState } from './lib/routes/v1/video';
+import { getVideoState, setVideoState } from './lib/routes/v1/video';
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -46,10 +46,22 @@ io.on('connection', (socket: Socket) => {
 
     io.sockets.emit('updatedUsers', getUsers());
     io.sockets.emit('syncVideo', getVideoState());
+
+    // socket.broadcast.emit('updateVideoSync');
+  });
+
+  socket.on('requestVideo', () => {
+    socket.broadcast.emit('updateVideoSync');
   });
 
   socket.on('user pressed play', (time: number) => {
     socket.broadcast.emit('broadcasting user pressed play', time);
+  });
+
+  socket.on('setVideoState', (video) => {
+    setVideoState(video);
+    console.log('updated with', video);
+    socket.broadcast.emit('updatedVideo', video);
   });
 
   socket.on('disconnect', () => {

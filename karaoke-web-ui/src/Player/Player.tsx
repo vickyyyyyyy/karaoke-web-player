@@ -16,10 +16,17 @@ export const Player = (props: Props) => {
 
   const socket = React.useContext(SocketContext);
 
-  const onReady = () => {
+  const onReady = (requestSync?: boolean) => {
+    if (requestSync) {
+      // request the times of other clients
+      socket.emit('requestVideo');
+    }
+
     if (initialVideoState?.time > 0) {
       videoPlayer.current.seekTo(initialVideoState?.time);
     }
+
+    setPlaying(initialVideoState?.playing);
 
     if (initialVideoState?.playing) {
       videoPlayer?.current?.getInternalPlayer()?.playVideo();
@@ -28,20 +35,35 @@ export const Player = (props: Props) => {
     }
   };
 
+  socket.on('updateVideoSync', () => {
+    socket.emit('setVideoState', {
+      playing,
+      time: videoPlayer.current.getCurrentTime(),
+    });
+  });
+
+  socket.on('updatedVideo', (video) => {
+    setVideoState(video);
+
+    onReady();
+  });
+
   socket.on('syncVideo', (video) => {
     setVideoState(video);
   });
 
-  socket.on('broadcasting user pressed play', (time) => {
-    videoPlayer.current.seekTo(time);
+  // socket.on('broadcasting user pressed play', (time) => {
+  //   videoPlayer.current.seekTo(time);
 
-    console.log('other user has pressed play', time, playing);
-  });
+  //   console.log('other user has pressed play', time, playing);
+  // });
 
   const onPlay = () => {
-    socket.emit('user pressed play', videoPlayer.current.getCurrentTime());
+    // socket.emit('user pressed play', videoPlayer.current.getCurrentTime());
 
     videoPlayer?.current?.getInternalPlayer()?.playVideo();
+
+    setPlaying(true);
 
     console.log(
       'i have pressed play',
@@ -58,8 +80,9 @@ export const Player = (props: Props) => {
   return (
     <>
       <ReactPlayer
+        progressInterval={100}
         ref={videoPlayer}
-        onReady={onReady}
+        onReady={() => onReady(true)}
         onPlay={onPlay}
         // onPause={onPause}
         url={url || DEFAULT_VIDEO}
