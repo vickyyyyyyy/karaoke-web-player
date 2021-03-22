@@ -36,6 +36,12 @@ const io = new Server(httpServer, {
 
 io.on('connection', (socket: Socket) => {
   console.log('on connect');
+  // when you connect, check the status of the video
+  // if you are the first one then start from the beginning
+
+  socket.on('user pressed play', () => {
+    socket.broadcast.emit('broadcasting user pressed play');
+  });
 
   socket.on('disconnect', () => {
     console.log('disconnected');
