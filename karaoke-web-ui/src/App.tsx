@@ -4,6 +4,7 @@ import Error from './Error';
 import * as api from './api';
 import Loading from './Loading';
 import { io, Socket } from 'socket.io-client';
+import { Player } from './Player/Player';
 const API_ENDPOINT = 'http://localhost:5000/';
 
 const App = () => {
@@ -53,6 +54,7 @@ const App = () => {
         <h2>Online Users</h2>
         {users.map((user) => user)}
       </div>
+      <Player />
       {error ? <Error /> : ready ? <span>{data}</span> : <Loading />}
     </div>
   );
