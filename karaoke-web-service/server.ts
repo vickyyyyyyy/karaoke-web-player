@@ -6,6 +6,7 @@ import { Server, Socket } from 'socket.io';
 import { createServer } from 'http';
 import bodyParser from 'body-parser';
 import { addUser, getUsers, removeUser } from './lib/routes/v1/users';
+import { getVideoState } from './lib/routes/v1/video';
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -44,6 +45,7 @@ io.on('connection', (socket: Socket) => {
     addUser({ name, id: socket.id });
 
     io.sockets.emit('updatedUsers', getUsers());
+    io.sockets.emit('syncVideo', getVideoState());
   });
 
   socket.on('user pressed play', (time: number) => {
