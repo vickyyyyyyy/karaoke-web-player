@@ -5,7 +5,7 @@ import * as api from './api';
 import Loading from './Loading';
 import { Player } from './Player/Player';
 import { Playlist, QueuedSong } from './Playlist/Playlist';
-import { v4 as uuidv4 } from 'uuid';
+
 import { User } from './api';
 import { SocketContext } from './SocketContext/SocketContext';
 
@@ -19,36 +19,21 @@ const App = () => {
   const [users, setUsers] = React.useState<User[]>([]);
   const [playlist, setPlaylist] = React.useState<QueuedSong[]>([]);
 
-  const getUsers = async () => {
-    try {
-      const data = await api.getUsers();
-      setUsers(data);
-    } catch (e) {
-      setError(true);
-    }
-  };
-
-  const addUser = async (socketId: string) => {
-    try {
-      // generate a random username
-      const newUsername = uuidv4();
-      await api.addUser({ name: newUsername, id: socketId });
-      await getUsers();
-    } catch (e) {
-      setError(true);
-    }
-  };
+  socket.on('updatedUsers', (users: User[]) => {
+    setUsers(users);
+  });
 
   React.useEffect(() => {
-    const waitForData = async () => {
-      await getUsers();
+    socket.emit('newUser');
+    // const waitForData = async () => {
+    //   await getUsers();
 
-      await addUser(socket.io.engine.id);
+    //   await addUser(socket.io.engine.id);
 
-      setReady(true);
-    };
+    //   setReady(true);
+    // };
 
-    waitForData();
+    // waitForData();
   }, []);
 
   return (

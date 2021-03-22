@@ -12,12 +12,12 @@ export const Player = (props: Props) => {
 
   const socket = React.useContext(SocketContext);
 
+  socket.on('broadcasting user pressed play', () => {
+    console.log('another user has pressed play');
+  });
+
   const onPlay = () => {
     socket.emit('user pressed play');
-
-    socket.on('broadcasting user pressed play', () => {
-      console.log('another user has pressed play');
-    });
   };
   const onPause = () => console.log('pause', socket.io.engine.id);
 
