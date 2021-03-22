@@ -18,9 +18,14 @@ export const getUsers = async () => {
   }
 };
 
-export const addUser = async (username: string) => {
+export interface User {
+  name: string;
+  id: string;
+}
+
+export const addUser = async (user: User) => {
   try {
-    const response = await client().post('/v1/users', { username });
+    const response = await client().post('/v1/users', { user });
   } catch (e) {
     throw new Error(e);
   }

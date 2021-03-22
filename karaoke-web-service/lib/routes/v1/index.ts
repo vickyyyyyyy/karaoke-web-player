@@ -14,9 +14,9 @@ router.get('/v1/users', (_req, res) =>
 router.post('/v1/users', (req, res) => {
   console.log('/v1/users', req.body);
 
-  addUser(req.body.username);
+  addUser(req.body.user);
 
-  return res.status(201).json(req.body.username);
+  return res.status(201).json(req.body.user);
 });
 
 export default router;

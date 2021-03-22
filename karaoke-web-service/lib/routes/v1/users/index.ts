@@ -1,11 +1,16 @@
-const storedUsers: string[] = [];
+const storedUsers: User[] = [];
 
 export const getUsers = () => {
   console.log('get users', storedUsers);
   return storedUsers;
 };
 
-export const addUser = (username: string) => {
+export interface User {
+  name: string;
+  id: string;
+}
+
+export const addUser = (user: User) => {
   console.log('stored users', storedUsers);
-  storedUsers.push(username);
+  storedUsers.push(user);
 };

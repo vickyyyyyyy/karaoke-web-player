@@ -7,6 +7,7 @@ import { io, Socket } from 'socket.io-client';
 import { Player } from './Player/Player';
 import { Playlist, QueuedSong } from './Playlist/Playlist';
 import { v4 as uuidv4 } from 'uuid';
+import { User } from './api';
 
 const API_ENDPOINT = 'http://localhost:5000/';
 
@@ -15,7 +16,7 @@ const App = () => {
   const [ready, setReady] = React.useState(false);
   const [error, setError] = React.useState(false);
   const [data, setData] = React.useState('');
-  const [users, setUsers] = React.useState([]);
+  const [users, setUsers] = React.useState<User[]>([]);
   const [playlist, setPlaylist] = React.useState<QueuedSong[]>([]);
 
   const getUsers = async () => {
@@ -27,12 +28,11 @@ const App = () => {
     }
   };
 
-  const addUser = async () => {
+  const addUser = async (socketId: string) => {
     try {
       // generate a random username
       const newUsername = uuidv4();
-
-      await api.addUser(newUsername);
+      await api.addUser({ name: newUsername, id: socketId });
       await getUsers();
     } catch (e) {
       setError(true);
@@ -41,12 +41,15 @@ const App = () => {
 
   React.useEffect(() => {
     // connect once at the start
-    const socket = io(API_ENDPOINT, { transports: ['websocket', 'polling'] });
-    setSocket(socket);
+    const newSocket = io(API_ENDPOINT, {
+      transports: ['websocket', 'polling'],
+    });
+    setSocket(newSocket);
 
     const waitForData = async () => {
       await getUsers();
-      await addUser();
+
+      await addUser(newSocket.io.engine.id);
 
       setReady(true);
     };
@@ -59,9 +62,9 @@ const App = () => {
       <h1>Karaoke</h1>
       <div>
         <h2>Online Users</h2>
-        {users.map((user) => (
-          <div>
-            <span>{user}</span>
+        {users.map((user, index) => (
+          <div key={`${index}-${user}`}>
+            <span>{user.name}</span>
           </div>
         ))}
       </div>
