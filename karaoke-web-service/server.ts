@@ -7,6 +7,11 @@ import { createServer } from 'http';
 import bodyParser from 'body-parser';
 import { addUser, getUsers, removeUser } from './lib/routes/v1/users';
 import { getVideoState, setVideoState } from './lib/routes/v1/video';
+import {
+  getPlaylist,
+  QueuedSong,
+  updatePlaylist,
+} from './lib/routes/v1/playlist';
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -48,6 +53,7 @@ io.on('connection', (socket: Socket) => {
     // io.sockets.emit('syncVideo', getVideoState());
 
     // socket.broadcast.emit('updateVideoSync');
+    io.sockets.emit('updatedPlaylist', getPlaylist());
   });
 
   socket.on('requestVideo', () => {
@@ -62,6 +68,22 @@ io.on('connection', (socket: Socket) => {
     setVideoState(video);
     console.log('updated with', video);
     socket.broadcast.emit('updatedVideo', video);
+  });
+
+  socket.on('defaultPlaylist', (playlist?: QueuedSong[]) => {
+    if (getPlaylist().length === 0) {
+      updatePlaylist(playlist);
+    }
+
+    socket.broadcast.emit('updatedPlaylist', getPlaylist());
+  });
+
+  socket.on('updatePlaylist', (playlist?: QueuedSong[]) => {
+    if (playlist) {
+      updatePlaylist(playlist);
+    }
+
+    socket.broadcast.emit('updatedPlaylist', getPlaylist());
   });
 
   socket.on('disconnect', () => {

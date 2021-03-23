@@ -1,6 +1,8 @@
+import { Socket } from 'dgram';
 import React from 'react';
 import * as api from '../api';
 import { DEFAULT_VIDEO } from '../Player/Player';
+import { SocketContext } from '../SocketContext/SocketContext';
 
 export interface QueuedSong {
   user: string;
@@ -16,36 +18,49 @@ interface Props {
 
 export const Playlist = (props: Props) => {
   const { playlist, setPlaylist, username } = props;
-
+  const socket = React.useContext(SocketContext);
   const [newSong, setNewSong] = React.useState<string>('');
 
   const setDefaultPlaylist = async () => {
     const details = await api.getVideoDetails(DEFAULT_VIDEO);
 
-    setPlaylist([
+    const defaultPlaylist = [
       {
-        user: username,
+        user: 'System',
         url: DEFAULT_VIDEO,
         title: details.title,
       },
-    ]);
+    ];
+
+    setPlaylist(defaultPlaylist);
+
+    socket.emit('defaultPlaylist', defaultPlaylist);
   };
 
   React.useEffect(() => {
     setDefaultPlaylist();
   }, []);
 
+  socket.on('updatedPlaylist', (playlist: QueuedSong[]) => {
+    setPlaylist(playlist);
+  });
+
   const queueNewSong = async (url: string) => {
     const details = await api.getVideoDetails(url);
-
-    setPlaylist([
+    const newPlaylist = [
       ...playlist,
       {
-        user: 'Default',
+        user: username,
         url,
         title: details.title,
       },
-    ]);
+    ];
+
+    setNewSong('');
+
+    setPlaylist(newPlaylist);
+
+    socket.emit('updatePlaylist', newPlaylist);
   };
 
   const skipSong = () => {
