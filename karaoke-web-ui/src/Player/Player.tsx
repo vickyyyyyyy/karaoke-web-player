@@ -9,7 +9,7 @@ interface Props {
 }
 export const Player = (props: Props) => {
   const { url } = props;
-  const [playing, setPlaying] = React.useState(false);
+  const [playing, setPlaying] = React.useState(true);
   const [initialVideoState, setVideoState] = React.useState<any>({});
 
   const videoPlayer = React.useRef(null) as any;
@@ -20,6 +20,7 @@ export const Player = (props: Props) => {
     if (requestSync) {
       // request the times of other clients
       socket.emit('requestVideo');
+      return;
     }
 
     if (initialVideoState?.time > 0) {
@@ -78,21 +79,15 @@ export const Player = (props: Props) => {
   // };
 
   return (
-    <>
-      <ReactPlayer
-        progressInterval={100}
-        ref={videoPlayer}
-        onReady={() => onReady(true)}
-        onPlay={onPlay}
-        // onPause={onPause}
-        url={url || DEFAULT_VIDEO}
-        controls={true}
-      />
-      <button
-        onClick={() => videoPlayer?.current?.getInternalPlayer()?.playVideo()}
-      >
-        play
-      </button>
-    </>
+    <ReactPlayer
+      playing={true}
+      progressInterval={100}
+      ref={videoPlayer}
+      onReady={() => onReady(true)}
+      onPlay={onPlay}
+      // onPause={onPause}
+      url={url || DEFAULT_VIDEO}
+      controls={true}
+    />
   );
 };

@@ -45,7 +45,7 @@ io.on('connection', (socket: Socket) => {
     addUser({ name, id: socket.id });
 
     io.sockets.emit('updatedUsers', getUsers());
-    io.sockets.emit('syncVideo', getVideoState());
+    // io.sockets.emit('syncVideo', getVideoState());
 
     // socket.broadcast.emit('updateVideoSync');
   });
