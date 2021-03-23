@@ -68,6 +68,8 @@ export const Playlist = (props: Props) => {
     newPlaylist.shift();
 
     setPlaylist(newPlaylist);
+
+    socket.emit('updatePlaylist', newPlaylist);
   };
 
   return (

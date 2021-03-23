@@ -53,7 +53,7 @@ io.on('connection', (socket: Socket) => {
     // io.sockets.emit('syncVideo', getVideoState());
 
     // socket.broadcast.emit('updateVideoSync');
-    io.sockets.emit('updatedPlaylist', getPlaylist());
+    // io.sockets.emit('updatedPlaylist', getPlaylist());
   });
 
   socket.on('requestVideo', () => {
@@ -75,7 +75,7 @@ io.on('connection', (socket: Socket) => {
       updatePlaylist(playlist);
     }
 
-    socket.broadcast.emit('updatedPlaylist', getPlaylist());
+    io.sockets.emit('updatedPlaylist', getPlaylist());
   });
 
   socket.on('updatePlaylist', (playlist?: QueuedSong[]) => {
