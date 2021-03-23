@@ -11,10 +11,11 @@ export interface QueuedSong {
 interface Props {
   playlist: QueuedSong[];
   setPlaylist: (queuedSong: QueuedSong[]) => void;
+  username: string;
 }
 
 export const Playlist = (props: Props) => {
-  const { playlist, setPlaylist } = props;
+  const { playlist, setPlaylist, username } = props;
 
   const [newSong, setNewSong] = React.useState<string>('');
 
@@ -23,7 +24,7 @@ export const Playlist = (props: Props) => {
 
     setPlaylist([
       {
-        user: 'Default',
+        user: username,
         url: DEFAULT_VIDEO,
         title: details.title,
       },
@@ -60,12 +61,14 @@ export const Playlist = (props: Props) => {
       <button onClick={() => skipSong()}>Skip to next</button>
       {playlist.map((queuedSong, index) => (
         <div key={`${index}-${queuedSong.title}`}>
+          <br />
           <span>{queuedSong.title}</span>
           <br />
           <span>by {queuedSong.user}</span>
           <br />
         </div>
       ))}
+      <br />
       {playlist.length === 0 ? (
         <div>
           <span>No queued songs, playing default</span>
