@@ -1,3 +1,22 @@
 .container {
   text-align: center;
 }
+
+.video-playlist-container {
+  display: flex;
+  justify-content: center;
+}
+
+.video {
+  padding: 0 2rem;
+}
+
+.playlist {
+  display: block;
+  padding: 0 2rem;
+}
+
+.playlist-add-song-container {
+  display: flex;
+  justify-content: space-evenly;
+}

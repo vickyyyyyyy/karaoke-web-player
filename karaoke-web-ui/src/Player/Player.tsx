@@ -79,15 +79,17 @@ export const Player = (props: Props) => {
   // };
 
   return (
-    <ReactPlayer
-      playing={true}
-      progressInterval={100}
-      ref={videoPlayer}
-      onReady={() => onReady(true)}
-      onPlay={onPlay}
-      // onPause={onPause}
-      url={url || DEFAULT_VIDEO}
-      controls={true}
-    />
+    <div className='video'>
+      <ReactPlayer
+        playing={true}
+        progressInterval={100}
+        ref={videoPlayer}
+        onReady={() => onReady(true)}
+        onPlay={onPlay}
+        // onPause={onPause}
+        url={url || DEFAULT_VIDEO}
+        controls={true}
+      />
+    </div>
   );
 };

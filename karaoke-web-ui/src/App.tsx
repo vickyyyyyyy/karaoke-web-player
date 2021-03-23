@@ -41,12 +41,14 @@ const App = () => {
   return (
     <div className='container'>
       <h1>Karaoke</h1>
-      <Player url={playlist?.[0]?.url} />
-      <Playlist
-        playlist={playlist}
-        setPlaylist={setPlaylist}
-        username={username}
-      />
+      <div className='video-playlist-container'>
+        <Player url={playlist?.[0]?.url} />
+        <Playlist
+          playlist={playlist}
+          setPlaylist={setPlaylist}
+          username={username}
+        />
+      </div>
       {/* {error ? <Error /> : ready ? <span>{data}</span> : <Loading />} */}
       <div>
         <h2>Online Users</h2>

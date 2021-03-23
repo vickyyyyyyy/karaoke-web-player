@@ -71,7 +71,7 @@ export const Playlist = (props: Props) => {
   };
 
   return (
-    <>
+    <div className='playlist'>
       <h2>Playlist</h2>
       <button onClick={() => skipSong()}>Skip to next</button>
       {playlist.map((queuedSong, index) => (
@@ -83,13 +83,14 @@ export const Playlist = (props: Props) => {
           <br />
         </div>
       ))}
-      <br />
       {playlist.length === 0 ? (
         <div>
+          <br />
           <span>No queued songs, playing default</span>
         </div>
       ) : null}
-      <div>
+      <br />
+      <div className='playlist-add-song-container'>
         <input
           placeholder='Link'
           value={newSong}
@@ -97,6 +98,6 @@ export const Playlist = (props: Props) => {
         />
         <button onClick={() => queueNewSong(newSong)}>Add song</button>
       </div>
-    </>
+    </div>
   );
 };
